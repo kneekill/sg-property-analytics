@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  webpack: (config) => {
+    config.externals = config.externals.concat([
+      "pg-hstore",
+      "sqlite3",
+      "sequelize",
+    ]);
+    return config;
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

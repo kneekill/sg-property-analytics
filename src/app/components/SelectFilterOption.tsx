@@ -8,7 +8,6 @@ interface SelectFilterProps {
 export function SelectFilter({ name, values, onChange }: SelectFilterProps) {
   return (
     <Select
-      className="w-64"
       isMulti
       name={name}
       options={values.map((option) => ({

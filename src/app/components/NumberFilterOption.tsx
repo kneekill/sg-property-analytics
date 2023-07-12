@@ -20,16 +20,9 @@ export function RangeFilter({ name, onChange }: RangeFilterProps) {
     setValue(values);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        margin: "2em",
-      }}
-    >
+    <div className="flex">
       <CreatableSelect
-        className="w-64"
+        className="w-full mr-8"
         isValidNewOption={isValidNewOption}
         name={name}
         options={[
@@ -56,7 +49,7 @@ export function RangeFilter({ name, onChange }: RangeFilterProps) {
         })}
       />
       <CreatableSelect
-        className="w-64"
+        className="w-full"
         name={name}
         formatCreateLabel={(inputValue) => inputValue}
         isValidNewOption={isValidNewOption}

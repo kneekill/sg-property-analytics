@@ -24,12 +24,12 @@ export function FilterOptionsContainer({
     });
   };
   return (
-    <div className="flex flex-wrap items-center justify-center mt-4">
+    <>
       {filterOptions
         ? Object.keys(filterOptions).map((column) => {
             return (
-              <div key={column} className="flex items-center mb-2 mr-4">
-                <label className="mr-2">{column}:</label>
+              <div key={column} className="flex p-8 flex-col w-full sm:w-auto">
+                <label className="mr-2 mb-2">{column}:</label>
                 {Object.keys(option_steps).includes(column) ? (
                   <RangeFilter name={column} onChange={onChange} />
                 ) : (
@@ -45,6 +45,6 @@ export function FilterOptionsContainer({
             );
           })
         : null}
-    </div>
+    </>
   );
 }

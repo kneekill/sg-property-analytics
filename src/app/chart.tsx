@@ -92,38 +92,40 @@ const PropertyChart: NextPage<ChartProps> = ({
     }));
   };
   return (
-    <div className="bg-gray-900 text-white">
+    <div className="bg-gray-900 text-white flex flex-col items-center">
       <h1 className="font-bold text-center text-2xl mb-4">
         Singapore Property Data Chart
       </h1>
-      {data !== undefined ? (
-        <Line
-          data={{
-            labels: data.map((item) => item.saleDate),
-            datasets: [
-              {
-                label: "PSF",
-                data: data.map((item) => item.psf),
-                borderColor: "rgb(75, 192, 192)",
-                fill: false,
-              },
-            ],
-          }}
-          options={{
-            plugins: {
-              legend: {
-                labels: {
-                  color: "white",
+      <div className="w-full lg:w-3/6 ">
+        {data !== undefined ? (
+          <Line
+            data={{
+              labels: data.map((item) => item.saleDate),
+              datasets: [
+                {
+                  label: "PSF",
+                  data: data.map((item) => item.psf),
+                  borderColor: "rgb(75, 192, 192)",
+                  fill: false,
+                },
+              ],
+            }}
+            options={{
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "white",
+                  },
                 },
               },
-            },
-          }}
+            }}
+          />
+        ) : null}
+        <FilterOptionsContainer
+          filterOptions={filterOptions}
+          setFilters={setFilters}
         />
-      ) : null}
-      <FilterOptionsContainer
-        filterOptions={filterOptions}
-        setFilters={setFilters}
-      />
+      </div>
     </div>
   );
 };

@@ -2,11 +2,6 @@ import { getDbModel } from "./data/database";
 import PropertyChart, { FilterOptions } from "./chart";
 import { consolidateTransactions } from "./utils/dataUtils";
 
-interface Transaction {
-  saleDate: string;
-  psf: number;
-}
-
 async function getInitialDbData() {
   const model = getDbModel();
   const filterOptions: FilterOptions = {};

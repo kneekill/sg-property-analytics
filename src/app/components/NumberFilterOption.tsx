@@ -1,9 +1,10 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import optionsJson from "../data/option_steps";
+import { FilterOptions } from "../chart";
 
 interface RangeFilterProps {
-  name: string;
+  name: keyof FilterOptions;
   onChange: (key: string, options: number[]) => void;
 }
 

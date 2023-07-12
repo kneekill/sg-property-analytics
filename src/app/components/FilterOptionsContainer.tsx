@@ -26,18 +26,19 @@ export function FilterOptionsContainer({
   return (
     <>
       {filterOptions
-        ? Object.keys(filterOptions).map((column) => {
+        ? Object.entries(filterOptions).map(([column, values]) => {
             return (
               <div key={column} className="flex p-8 flex-col w-full sm:w-auto">
                 <label className="mr-2 mb-2">{column}:</label>
                 {Object.keys(option_steps).includes(column) ? (
-                  <RangeFilter name={column} onChange={onChange} />
+                  <RangeFilter
+                    name={column as keyof FilterOptions}
+                    onChange={onChange}
+                  />
                 ) : (
                   <SelectFilter
                     name={column}
-                    values={
-                      filterOptions[column as keyof FilterOptions] as string[]
-                    }
+                    values={values as string[]}
                     onChange={onChange}
                   />
                 )}

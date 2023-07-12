@@ -80,17 +80,6 @@ const PropertyChart: NextPage<ChartProps> = ({
     }
   };
 
-  const handleFilterChange = (name: string, selectedOptions: any) => {
-    console.log("name", name);
-    console.log("selectedOptions", selectedOptions);
-    const options = selectedOptions
-      ? selectedOptions.map((option: any) => option.value)
-      : undefined;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: options,
-    }));
-  };
   return (
     <div className="bg-gray-900 text-white flex flex-col items-center">
       <h1 className="font-bold text-center text-2xl mb-4">
@@ -111,10 +100,21 @@ const PropertyChart: NextPage<ChartProps> = ({
               ],
             }}
             options={{
-              plugins: {
-                legend: {
-                  labels: {
-                    color: "white",
+              scales: {
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    color: "rgb(148, 139, 137)",
+                  },
+                },
+                y: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    color: "rgb(148, 139, 137)",
                   },
                 },
               },

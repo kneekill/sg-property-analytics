@@ -28,7 +28,6 @@ async function getInitialDbData() {
 }
 
 export default async function Page() {
-  console.log("yo2");
   const { initialData, filterOptions } = await getInitialDbData();
   return (
     <PropertyChart initialData={initialData} filterOptions={filterOptions} />

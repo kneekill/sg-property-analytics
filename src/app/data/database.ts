@@ -6,6 +6,7 @@ import {
   Model,
   Sequelize,
 } from "sequelize";
+import sqlite3 from "sqlite3";
 
 export class PropertyTransaction extends Model<
   InferAttributes<PropertyTransaction>,
@@ -33,6 +34,7 @@ export class PropertyTransaction extends Model<
 export const getDbModel = () => {
   const sequelize = new Sequelize({
     dialect: "sqlite",
+    dialectModule: sqlite3,
     storage: "./src/app/data/propertyTransactions.db",
   });
 

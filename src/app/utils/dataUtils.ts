@@ -1,10 +1,7 @@
+import { Transaction } from "../chart";
+
 interface RawTransaction {
   saleDate: number;
-  psf: number;
-}
-
-interface Transaction {
-  saleDate: string;
   psf: number;
 }
 

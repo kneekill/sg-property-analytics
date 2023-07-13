@@ -9,11 +9,11 @@ import {
   Chart,
 } from "chart.js";
 import { NextPage } from "next";
-import { FilterOptionsContainer } from "./components/FilterOptionsContainer";
+import { FilterContainer } from "./components/filters/FilterContainer";
 import { consolidateTransactions } from "./utils/dataUtils";
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
-interface Transaction {
+export interface Transaction {
   saleDate: string;
   psf: number;
 }
@@ -121,7 +121,7 @@ const PropertyChart: NextPage<ChartProps> = ({
             }}
           />
         ) : null}
-        <FilterOptionsContainer
+        <FilterContainer
           filterOptions={filterOptions}
           setFilters={setFilters}
         />

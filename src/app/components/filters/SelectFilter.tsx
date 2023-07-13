@@ -1,4 +1,5 @@
 import Select from "react-select";
+import { themeConfig } from "./FilterConstants";
 
 interface SelectFilterProps {
   name: string;
@@ -8,6 +9,7 @@ interface SelectFilterProps {
 export function SelectFilter({ name, values, onChange }: SelectFilterProps) {
   return (
     <Select
+      instanceId={name}
       isMulti
       name={name}
       options={values.map((option) => ({
@@ -15,29 +17,18 @@ export function SelectFilter({ name, values, onChange }: SelectFilterProps) {
         label: option,
       }))}
       onChange={(selectedOptions) => {
-        console.log(selectedOptions);
-        console.log(name);
         onChange(
           name,
           selectedOptions.map((option) => option.value)
         );
       }}
       styles={{
-        multiValue: (styles, opts) => ({
+        multiValue: (styles) => ({
           ...styles,
           backgroundColor: "rgba(75, 192, 192, 0.25)",
         }),
       }}
-      theme={(theme) => ({
-        ...theme,
-        colors: {
-          ...theme.colors,
-          primary: "rgb(75, 192, 192)",
-          primary25: "rgba(75, 192, 192, 0.25)",
-          neutral0: "rgb(36, 36, 36)",
-          neutral80: "white",
-        },
-      })}
+      theme={themeConfig}
     />
   );
 }

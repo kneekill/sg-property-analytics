@@ -1,20 +1,20 @@
-import { FilterOptions } from "../chart";
-import { SelectFilter } from "./SelectFilterOption";
+import { FilterOptions } from "../../chart";
+import { SelectFilter } from "./SelectFilter";
 import { SetStateAction } from "react";
-import { RangeFilter } from "./NumberFilterOption";
-import option_steps from "../data/option_steps";
+import { RangeFilter } from "./RangeFilter";
+import option_steps from "../../data/range_options";
 
-interface FilterOptionsContainerProps {
+interface FilterContainerProps {
   filterOptions: FilterOptions;
   setFilters: (
     value: SetStateAction<Partial<FilterOptions> | undefined>
   ) => void;
 }
 
-export function FilterOptionsContainer({
+export function FilterContainer({
   filterOptions,
   setFilters,
-}: FilterOptionsContainerProps) {
+}: FilterContainerProps) {
   const onChange = (name: string, value: string[] | number[]) => {
     setFilters((prevState) => {
       return {

@@ -1,5 +1,5 @@
 import { PropertyTransaction, getDbModel } from "../../data/database";
-import options from "../../data/option_steps";
+import options from "../../data/range_options";
 import { NextRequest, NextResponse } from "next/server";
 import { InferAttributes, Op, WhereOptions } from "sequelize";
 
@@ -52,5 +52,3 @@ export async function POST(req: ExtendedNextApiRequest): Promise<NextResponse> {
     );
   }
 }
-
-// type Filter =

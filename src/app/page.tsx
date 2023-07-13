@@ -5,7 +5,6 @@ import { consolidateTransactions } from "./utils/dataUtils";
 async function getInitialDbData() {
   const model = getDbModel();
   const filterOptions: FilterOptions = {};
-
   for (const column of Object.keys(model.getAttributes())) {
     if (column === "id") continue;
     filterOptions[column as keyof FilterOptions] = await model
@@ -28,6 +27,7 @@ async function getInitialDbData() {
 }
 
 export default async function Page() {
+  console.log("yo2");
   const { initialData, filterOptions } = await getInitialDbData();
   return (
     <PropertyChart initialData={initialData} filterOptions={filterOptions} />

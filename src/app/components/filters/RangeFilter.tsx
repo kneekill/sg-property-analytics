@@ -1,7 +1,8 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import optionsJson from "../data/option_steps";
-import { FilterOptions } from "../chart";
+import optionsJson from "../../data/range_options";
+import { FilterOptions } from "../../chart";
+import { themeConfig } from "./FilterConstants";
 
 interface RangeFilterProps {
   name: keyof FilterOptions;
@@ -23,6 +24,7 @@ export function RangeFilter({ name, onChange }: RangeFilterProps) {
   return (
     <div className="flex">
       <CreatableSelect
+        instanceId={`${name}-min`}
         className="w-full mr-8"
         isValidNewOption={isValidNewOption}
         name={name}
@@ -38,18 +40,10 @@ export function RangeFilter({ name, onChange }: RangeFilterProps) {
             handleChange([selectedOption.value, value[1]]);
           }
         }}
-        theme={(theme) => ({
-          ...theme,
-          colors: {
-            ...theme.colors,
-            primary: "rgb(75, 192, 192)",
-            primary25: "rgba(75, 192, 192, 0.25)",
-            neutral0: "rgb(36, 36, 36)",
-            neutral80: "white",
-          },
-        })}
+        theme={themeConfig}
       />
       <CreatableSelect
+        instanceId={`${name}-max`}
         className="w-full"
         name={name}
         formatCreateLabel={(inputValue) => inputValue}
@@ -66,16 +60,7 @@ export function RangeFilter({ name, onChange }: RangeFilterProps) {
             handleChange([value[0], selectedOption.value]);
           }
         }}
-        theme={(theme) => ({
-          ...theme,
-          colors: {
-            ...theme.colors,
-            primary: "rgb(75, 192, 192)",
-            primary25: "rgba(75, 192, 192, 0.25)",
-            neutral0: "rgb(36, 36, 36)",
-            neutral80: "white",
-          },
-        })}
+        theme={themeConfig}
       />
     </div>
   );

@@ -4,6 +4,7 @@ import { consolidateTransactions } from "./utils/dataUtils";
 
 async function getInitialDbData() {
   const model = getDbModel();
+  //@ts-ignore
   const filterOptions: FilterOptions = {};
   for (const column of Object.keys(model.getAttributes())) {
     if (column === "id") continue;

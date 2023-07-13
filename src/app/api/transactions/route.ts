@@ -26,6 +26,7 @@ export async function POST(req: ExtendedNextApiRequest): Promise<NextResponse> {
         filters
       ) as Array<PropertyTransactionKeys>) {
         whereClause[filter as keyof typeof whereClause] =
+          //@ts-ignore
           options?.[filter] !== undefined
             ? {
                 [Op.between]: filters[filter],

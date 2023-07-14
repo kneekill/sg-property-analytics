@@ -6,6 +6,7 @@ import {
   Model,
   Sequelize,
 } from "sequelize";
+import pg from "pg";
 import sqlite3 from "sqlite3";
 
 export class PropertyTransaction extends Model<
@@ -31,12 +32,15 @@ export class PropertyTransaction extends Model<
   declare highFloorLevel: string;
 }
 
+const postgresConnection = process.env.POSTGRES_CONNECTION;
+
 export const getDbModel = () => {
-  const sequelize = new Sequelize({
-    dialect: "sqlite",
-    dialectModule: sqlite3,
-    storage: "./src/app/data/propertyTransactions.db",
-  });
+  const sequelize = new Sequelize(
+    postgresConnection || "sqlite:./src/app/data/propertyTransactions.db",
+    {
+      dialectModule: postgresConnection ? pg : sqlite3,
+    }
+  );
 
   PropertyTransaction.init(
     {

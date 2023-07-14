@@ -38,8 +38,8 @@ async function main() {
     flags: "a",
   });
   // TODO: move this to query params
-  const fromDate = "6/2018";
-  const toDate = "6/2023";
+  const fromDate = "5/2023";
+  const toDate = "7/2023";
   const [fromMonth, fromYear] = fromDate.split("/");
   const [toMonth, toYear] = toDate.split("/");
   postalDistricts.forEach(async (postalDistrict) => {

@@ -18,7 +18,10 @@ interface ExtendedNextApiRequest extends NextRequest {
 export async function POST(req: ExtendedNextApiRequest): Promise<NextResponse> {
   try {
     const { filters } = await req.json();
+    var startTime = performance.now();
     const model = getDbModel();
+    var endTime = performance.now();
+    console.log(`getDbModel: ${endTime - startTime}`);
     const whereClause: WhereOptions<PropertyTransactionAttributes> = {};
 
     if (filters) {
@@ -36,13 +39,18 @@ export async function POST(req: ExtendedNextApiRequest): Promise<NextResponse> {
               };
       }
     }
-
+    var startTime = performance.now();
     const result = await model.findAll({
       where: whereClause,
       attributes: ["saleDate", "psf"],
-      // limit: 500,
+      benchmark: true,
+      logging: console.log,
+      raw: true,
+      nest: true,
       order: [["saleDate", "ASC"]],
     });
+    var endTime = performance.now();
+    console.log(`model.findAll: ${endTime - startTime}`);
 
     return NextResponse.json(result);
   } catch (error) {

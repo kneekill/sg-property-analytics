@@ -1,4 +1,4 @@
-import Select from "react-select";
+import Select, { createFilter } from "react-select";
 import { themeConfig } from "./FilterConstants";
 
 interface SelectFilterProps {
@@ -16,6 +16,7 @@ export function SelectFilter({ name, values, onChange }: SelectFilterProps) {
         value: option,
         label: option,
       }))}
+      filterOption={createFilter({ ignoreAccents: false })}
       onChange={(selectedOptions) => {
         onChange(
           name,

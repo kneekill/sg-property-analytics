@@ -1,6 +1,6 @@
 import { FilterOptions } from "../chart";
 
-export default {
+export const rangeFilterOptions = {
   sqft: [500, 750, 1000, 1200, 1500, 2000, 2500, 3000, 4000, 5000, 7500, 10000],
   psf: [
     100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400,
@@ -20,3 +20,6 @@ export default {
     2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023,
   ],
 } as Partial<FilterOptions>;
+export const isRangeAttribute = (attribute: string) => {
+  return Object.keys(rangeFilterOptions).includes(attribute);
+};

@@ -1,58 +1,59 @@
-import { PropertyTransaction, getDbModel } from "../../data/database";
-import options from "../../data/range_options";
+import { FilterOptions } from "@/app/chart";
+import {
+  PropertyTransaction,
+  findAllOptions,
+  getDbModel,
+} from "../../data/database";
+import { isRangeAttribute } from "../../data/range_options";
 import { NextRequest, NextResponse } from "next/server";
 import { InferAttributes, Op, WhereOptions } from "sequelize";
 
 type PropertyTransactionAttributes = InferAttributes<PropertyTransaction>;
-type PropertyTransactionKeys = keyof PropertyTransactionAttributes;
 
-type TransactionRequestBody = {
-  filters: { [key in PropertyTransactionKeys]: string[] };
-  dateRange: string[];
+const getFilters = (searchParams: URLSearchParams) => {
+  const filters: Partial<FilterOptions> = {};
+  for (const attribute in PropertyTransaction.getAttributes()) {
+    const values = searchParams.getAll(attribute);
+    if (values.length > 0) {
+      //@ts-ignore
+      filters[attribute] = isRangeAttribute(attribute)
+        ? [Number(values[0]), Number(values[1])]
+        : values;
+    }
+  }
+  return filters;
 };
 
-interface ExtendedNextApiRequest extends NextRequest {
-  json: () => Promise<TransactionRequestBody>;
-}
-
-export async function POST(req: ExtendedNextApiRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
-    const { filters } = await req.json();
-    var startTime = performance.now();
+    const { searchParams } = new URL(req.url);
     const model = getDbModel();
-    var endTime = performance.now();
-    console.log(`getDbModel: ${endTime - startTime}`);
     const whereClause: WhereOptions<PropertyTransactionAttributes> = {};
-
-    if (filters) {
-      for (const filter of Object.keys(
-        filters
-      ) as Array<PropertyTransactionKeys>) {
-        whereClause[filter as keyof typeof whereClause] =
-          //@ts-ignore
-          options?.[filter] !== undefined
-            ? {
-                [Op.between]: filters[filter],
-              }
-            : {
-                [Op.in]: filters[filter],
-              };
+    if (searchParams) {
+      const filters = getFilters(searchParams);
+      for (const filter of Object.keys(filters) as Array<keyof FilterOptions>) {
+        whereClause[filter as keyof typeof whereClause] = isRangeAttribute(
+          filter
+        )
+          ? {
+              [Op.between]: filters[filter],
+            }
+          : {
+              [Op.in]: filters[filter],
+            };
       }
     }
-    var startTime = performance.now();
     const result = await model.findAll({
       where: whereClause,
-      attributes: ["saleDate", "psf"],
-      benchmark: true,
-      logging: console.log,
-      raw: true,
-      nest: true,
-      order: [["saleDate", "ASC"]],
+      ...findAllOptions,
     });
-    var endTime = performance.now();
-    console.log(`model.findAll: ${endTime - startTime}`);
 
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: {
+        "Cache-Control": "max-age=3600",
+        "Vercel-CDN-Cache-Control": "max-age=3600",
+      },
+    });
   } catch (error) {
     console.error("Error fetching property data:", error);
     return NextResponse.json(

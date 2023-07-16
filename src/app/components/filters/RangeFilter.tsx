@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import optionsJson from "../../data/range_options";
+import { rangeFilterOptions } from "../../data/range_options";
 import { FilterOptions } from "../../chart";
 import { themeConfig } from "./FilterConstants";
 
@@ -14,7 +14,7 @@ const isValidNewOption = (inputValue: string) => {
 };
 
 export function RangeFilter({ name, onChange }: RangeFilterProps) {
-  const options = optionsJson[name] as number[];
+  const options = rangeFilterOptions[name] as number[];
   const [value, setValue] = useState<number[]>([0, Number.MAX_SAFE_INTEGER]);
   const handleChange = (values: number[]) => {
     console.log(values);

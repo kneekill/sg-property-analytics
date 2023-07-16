@@ -2,7 +2,7 @@ import { FilterOptions } from "../../chart";
 import { SelectFilter } from "./SelectFilter";
 import { SetStateAction } from "react";
 import { RangeFilter } from "./RangeFilter";
-import option_steps from "../../data/range_options";
+import { isRangeAttribute } from "../../data/range_options";
 
 interface FilterContainerProps {
   filterOptions: FilterOptions;
@@ -30,7 +30,7 @@ export function FilterContainer({
             return (
               <div key={column} className="flex p-8 flex-col w-full sm:w-auto">
                 <label className="mr-2 mb-2">{column}:</label>
-                {Object.keys(option_steps).includes(column) ? (
+                {isRangeAttribute(column) ? (
                   <RangeFilter
                     name={column as keyof FilterOptions}
                     onChange={onChange}

@@ -1,6 +1,7 @@
 import {
   CreationOptional,
   DataTypes,
+  FindOptions,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -120,3 +121,11 @@ export const getDbModel = () => {
   );
   return PropertyTransaction;
 };
+
+export const findAllOptions: FindOptions<InferAttributes<PropertyTransaction>> =
+  {
+    attributes: ["saleDate", "psf"],
+    raw: true,
+    nest: true,
+    order: [["saleDate", "ASC"]],
+  };

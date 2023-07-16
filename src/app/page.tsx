@@ -1,4 +1,4 @@
-import { getDbModel } from "./data/database";
+import { findAllOptions, getDbModel } from "./data/database";
 import PropertyChart, { FilterOptions } from "./chart";
 import { consolidateTransactions } from "./utils/dataUtils";
 
@@ -12,6 +12,8 @@ async function getInitialDbData() {
       .findAll({
         attributes: [column],
         group: [column],
+        raw: true,
+        nest: true,
       })
       .then((propertyTransaction) =>
         //@ts-ignore
@@ -20,8 +22,7 @@ async function getInitialDbData() {
   }
   const initialData = await model
     .findAll({
-      attributes: ["saleDate", "psf"],
-      order: [["saleDate", "ASC"]],
+      ...findAllOptions,
     })
     .then(consolidateTransactions);
   return { initialData, filterOptions };

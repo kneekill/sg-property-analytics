@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   CategoryScale,
@@ -10,7 +10,7 @@ import {
 } from "chart.js";
 import { NextPage } from "next";
 import { FilterContainer } from "./components/filters/FilterContainer";
-import { consolidateTransactions } from "./utils/dataUtils";
+import { RawTransaction, consolidateTransactions } from "./utils/dataUtils";
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 export interface Transaction {
@@ -48,42 +48,41 @@ const PropertyChart: NextPage<ChartProps> = ({
 }) => {
   const [data, setData] = useState<Transaction[]>(initialData);
   const [filters, setFilters] = useState<Partial<FilterOptions>>();
-  useEffect(() => {
-    if (filters) {
-      fetchData();
-    }
-  }, [filters]);
 
-  const fetchData = async () => {
-    console.log("fetchData");
+  const fetchData = useCallback(async () => {
+    const urlParams = new URLSearchParams();
+    if (filters) {
+      for (const [key, values] of Object.entries(filters)) {
+        if (values) {
+          values.forEach((value) => {
+            urlParams.append(key, value.toString());
+          });
+        }
+      }
+    }
     try {
-      const response = await fetch("/api/transactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          filters,
-          dateRange: null,
-        }),
-      });
+      const response = await fetch("/api/transactions?" + urlParams.toString());
 
       if (!response.ok) {
         throw new Error("Failed to fetch property data");
       }
 
-      const newData: { saleDate: number; psf: number }[] =
-        await response.json();
+      const newData: RawTransaction[] = await response.json();
       setData(consolidateTransactions(newData));
     } catch (error) {
       console.error("Error fetching property data:", error);
     }
-  };
+  }, [filters]);
+  useEffect(() => {
+    if (filters) {
+      fetchData();
+    }
+  }, [filters, fetchData]);
 
   return (
     <div className="bg-gray-900 text-white flex flex-col items-center">
       <h1 className="font-bold text-center text-2xl mb-4">
-        Singapore Property Data Chart
+        Singapore Property Chart
       </h1>
       <div className="w-full lg:w-3/6 ">
         {data !== undefined ? (

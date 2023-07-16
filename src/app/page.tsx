@@ -1,6 +1,7 @@
 import { findAllOptions, getDbModel } from "./data/database";
 import PropertyChart, { FilterOptions } from "./chart";
 import { consolidateTransactions } from "./utils/dataUtils";
+import { Op } from "sequelize";
 
 async function getInitialDbData() {
   const model = getDbModel();
@@ -12,6 +13,12 @@ async function getInitialDbData() {
       .findAll({
         attributes: [column],
         group: [column],
+        order: [[column, "ASC"]],
+        where: {
+          [column]: {
+            [Op.not]: null,
+          },
+        },
         raw: true,
         nest: true,
       })

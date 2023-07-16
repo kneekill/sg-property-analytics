@@ -1,34 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SG Property Analytics
 
-## Getting Started
+Small project to explore React Server Components while also providing a better way of charting Singapore property data than [URA's website](https://www.ura.gov.sg/property-market-information/pmiResidentialTransactionSearch).
 
-First, run the development server:
+The app is hosted here: https://sg-property-analytics.vercel.app/ with supabase for postgres since vercel's serverless functions does not support SQLite.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Run
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Webapp
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev` and it will be hosted on [http://localhost:3000](http://localhost:3000)
+  - By default, the app runs with the sqlite database. Expose `POSTGRES_CONNECTION` with a postgres connection string to use postgres instead.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Update Data
 
-## Learn More
+To update the data for the app, you need to run the scraper and seed the database.
 
-To learn more about Next.js, take a look at the following resources:
+- Drop the current latest month from the database
+- Update the [scrape.js](./scraper/scrape.js) with the latest dates
+- Run `node ./scraper/scrape.js`
+  - check the generated `data.csv` file to ensure that the scrape was successful
+- Run `npx tsx ./scraper/seed.ts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## TODOs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Handle scraping failures
+- Automate data updates using github actions
+- Add transaction list
+- More advanced charting

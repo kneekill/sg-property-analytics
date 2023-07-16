@@ -2,8 +2,7 @@ import { createReadStream } from "fs";
 import { parse } from "csv";
 import { parse as dateParse } from "date-fns";
 import { PropertyTransaction, getDbModel } from "@/app/data/database";
-import { Optional, InferCreationAttributes } from "sequelize";
-import { NullishPropertiesOf } from "sequelize/types/utils";
+import { InferAttributes } from "sequelize";
 
 function parseIntWithComma(str: string) {
   return parseInt(str.replace(/,/g, ""));
@@ -11,31 +10,7 @@ function parseIntWithComma(str: string) {
 const SQLITE_BULK_INSERT_LIMIT = 500;
 
 async function main() {
-  var models:
-    | readonly Optional<
-        InferCreationAttributes<PropertyTransaction, { omit: never }>,
-        NullishPropertiesOf<
-          InferCreationAttributes<PropertyTransaction, { omit: never }>
-        >
-      >[]
-    | {
-        projectName: string;
-        price: number;
-        sqft: number;
-        psf: number;
-        saleDate: number;
-        streetName: string;
-        saleType: string;
-        areaType: string;
-        propertyType: string;
-        leaseType: string;
-        leaseLength: number | undefined;
-        topYear: number | undefined;
-        district: number;
-        marketSegment: string;
-        lowFloorLevel: string;
-        highFloorLevel: string;
-      }[] = [];
+  var models: Omit<InferAttributes<PropertyTransaction>, "id">[] = [];
   const model = getDbModel();
   const readable = createReadStream("./data.csv").pipe(parse());
   for await (const row of readable) {
@@ -77,7 +52,6 @@ async function main() {
     const levelSplit = row[16].split(" ");
     const lowFloorLevel = levelSplit[0];
     const highFloorLevel = levelSplit[levelSplit.length - 1];
-    //@ts-ignore
     models.push({
       projectName,
       price,

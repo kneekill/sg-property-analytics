@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { InferAttributes, Op, WhereOptions } from "sequelize";
 
 type PropertyTransactionAttributes = InferAttributes<PropertyTransaction>;
+export const dynamic = "force-dynamic";
 
 const getFilters = (searchParams: URLSearchParams) => {
   const filters: Partial<FilterOptions> = {};

@@ -15,10 +15,7 @@ The app is hosted here: https://sg-property-analytics.vercel.app/ with supabase 
 
 To update the data for the app, you need to run the scraper and seed the database.
 
-- Drop the current latest month from the database
-- Update the [scrape.js](./scraper/scrape.js) with the latest dates
-- Run `node ./scraper/scrape.js`
-  - check the generated `data.csv` file to ensure that the scrape was successful
+- Update the [seed.ts](./scraper/seed.ts) with the latest dates
 - Run `npx tsx ./scraper/seed.ts`
 
 ## TODOs

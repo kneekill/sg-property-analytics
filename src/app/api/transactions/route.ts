@@ -1,4 +1,4 @@
-import { FilterOptions } from "@/app/chart";
+import { FilterOptions } from "@/app/types";
 import {
   PropertyTransaction,
   findAllOptions,

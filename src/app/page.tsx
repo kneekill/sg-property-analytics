@@ -1,7 +1,8 @@
 import { findAllOptions, getDbModel } from "./data/database";
-import PropertyChart, { FilterOptions } from "./chart";
+import PropertyChart from "./chart";
 import { consolidateTransactions } from "./utils/dataUtils";
 import { Op } from "sequelize";
+import { FilterOptions } from "./types";
 
 async function getInitialDbData() {
   const model = getDbModel();

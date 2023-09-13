@@ -10,32 +10,9 @@ import {
 } from "chart.js";
 import { NextPage } from "next";
 import { FilterContainer } from "./components/filters/FilterContainer";
-import { RawTransaction, consolidateTransactions } from "./utils/dataUtils";
+import { consolidateTransactions } from "./utils/dataUtils";
+import { FilterOptions, RawTransaction, Transaction } from "./types";
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
-
-export interface Transaction {
-  saleDate: string;
-  psf: number;
-}
-
-export interface FilterOptions {
-  projectName: string[];
-  price: number[];
-  sqft: number[];
-  psf: number[];
-  saleDate: string[];
-  streetName: string[];
-  saleType: string[];
-  areaType: string[];
-  propertyType: string[];
-  leaseType: string[];
-  leaseLength: number[];
-  topYear: number[];
-  district: number[];
-  marketSegment: string[];
-  lowFloorLevel: string[];
-  highFloorLevel: string[];
-}
 
 interface ChartProps {
   initialData: Transaction[];

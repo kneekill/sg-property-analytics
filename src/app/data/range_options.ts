@@ -1,4 +1,4 @@
-import { FilterOptions } from "../chart";
+import { FilterOptions } from "../types";
 
 export const rangeFilterOptions = {
   sqft: [500, 750, 1000, 1200, 1500, 2000, 2500, 3000, 4000, 5000, 7500, 10000],

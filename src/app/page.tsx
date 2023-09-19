@@ -1,10 +1,17 @@
-import { findAllOptions, getDbModel } from "./data/database";
+import {
+  PropertyTransaction,
+  findAllOptions,
+  getDbModel,
+} from "./data/database";
 import PropertyChart from "./chart";
 import { consolidateTransactions } from "./utils/dataUtils";
-import { Op } from "sequelize";
+import { InferAttributes, Op, WhereOptions } from "sequelize";
 import { FilterOptions } from "./types";
+import { FilterContainer } from "./components/filters/FilterContainer";
+import { cache } from "react";
+import { isRangeAttribute } from "./data/range_options";
 
-async function getInitialDbData() {
+const getFilterOptions = cache(async () => {
   const model = getDbModel();
   //@ts-ignore
   const filterOptions: FilterOptions = {};
@@ -28,17 +35,63 @@ async function getInitialDbData() {
         propertyTransaction.map((transaction) => transaction[column])
       );
   }
-  const initialData = await model
+  return filterOptions;
+});
+type PropertyTransactionAttributes = InferAttributes<PropertyTransaction>;
+
+const getFilters = (searchParams: object) => {
+  const filters: Partial<FilterOptions> = {};
+  for (const attribute in PropertyTransaction.getAttributes()) {
+    //@ts-ignore
+    let values = searchParams[attribute];
+    if (values !== undefined) {
+      if (!Array.isArray(values)) {
+        values = [values];
+      }
+      //@ts-ignore
+      filters[attribute] = isRangeAttribute(attribute)
+        ? [Number(values[0]), Number(values[1])]
+        : values;
+    }
+  }
+  return filters;
+};
+
+async function getInitialDbData(searchParams: object) {
+  const model = getDbModel();
+  const whereClause: WhereOptions<PropertyTransactionAttributes> = {};
+  const filters = getFilters(searchParams);
+  for (const filter of Object.keys(filters) as Array<keyof FilterOptions>) {
+    whereClause[filter as keyof typeof whereClause] = isRangeAttribute(filter)
+      ? {
+          [Op.between]: filters[filter],
+        }
+      : {
+          [Op.in]: filters[filter],
+        };
+  }
+
+  const result = await model
     .findAll({
+      where: whereClause,
       ...findAllOptions,
     })
     .then(consolidateTransactions);
-  return { initialData, filterOptions };
+  return result;
 }
 
-export default async function Page() {
-  const { initialData, filterOptions } = await getInitialDbData();
+export default async function Page({ searchParams }: { searchParams: object }) {
+  const initialData = await getInitialDbData(searchParams);
+  const filterOptions = await getFilterOptions();
   return (
-    <PropertyChart initialData={initialData} filterOptions={filterOptions} />
+    <div className="bg-gray-900 text-white flex flex-col items-center">
+      <h1 className="font-bold text-center text-2xl mb-4">
+        Singapore Property Chart
+      </h1>
+      <div className="w-full lg:w-3/6 ">
+        <PropertyChart data={initialData} />
+        <FilterContainer filterOptions={filterOptions} />
+      </div>
+    </div>
   );
 }

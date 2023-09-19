@@ -1,20 +1,36 @@
-import { FilterOptions } from "../../chart";
+"use client";
+import { FilterOptions } from "@/app/types";
 import { SelectFilter } from "./SelectFilter";
-import { SetStateAction } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { RangeFilter } from "./RangeFilter";
 import { isRangeAttribute } from "../../data/range_options";
+import { usePathname, useRouter } from "next/navigation";
 
 interface FilterContainerProps {
   filterOptions: FilterOptions;
-  setFilters: (
-    value: SetStateAction<Partial<FilterOptions> | undefined>
-  ) => void;
 }
 
-export function FilterContainer({
-  filterOptions,
-  setFilters,
-}: FilterContainerProps) {
+export function FilterContainer({ filterOptions }: FilterContainerProps) {
+  const [filters, setFilters] = useState<Partial<FilterOptions>>();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [, startTransition] = useTransition();
+  useEffect(() => {
+    const urlParams = new URLSearchParams();
+    if (filters) {
+      for (const [key, values] of Object.entries(filters)) {
+        if (values) {
+          values.forEach((value) => {
+            urlParams.append(key, value.toString());
+          });
+        }
+      }
+    }
+    startTransition(() => {
+      router.replace(`${pathname}?${urlParams.toString()}`);
+    });
+  }, [filters, pathname, router]);
   const onChange = (name: string, value: string[] | number[]) => {
     setFilters((prevState) => {
       return {

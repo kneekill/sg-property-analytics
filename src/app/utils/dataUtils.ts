@@ -12,8 +12,8 @@ function median(values: number[]): number {
 
 export const consolidateTransactions = (
   propertyTransactions: RawTransaction[]
-) => {
-  const consolidatedData: Transaction[] = [];
+): Transaction[] => {
+  const consolidatedData = [];
   const map = new Map();
   propertyTransactions.forEach((transaction) => {
     const key = transaction.saleDate;

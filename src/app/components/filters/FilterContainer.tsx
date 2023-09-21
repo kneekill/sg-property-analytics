@@ -26,10 +26,10 @@ export function FilterContainer({ filterOptions }: FilterContainerProps) {
           });
         }
       }
+      startTransition(() => {
+        router.replace(`${pathname}?${urlParams.toString()}`);
+      });
     }
-    startTransition(() => {
-      router.replace(`${pathname}?${urlParams.toString()}`);
-    });
   }, [filters, pathname, router]);
   const onChange = (name: string, value: string[] | number[]) => {
     setFilters((prevState) => {

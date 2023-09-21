@@ -12,18 +12,27 @@ import { Transaction } from "./types";
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 interface ChartProps {
-  data: Transaction[];
+  transactions: Transaction[];
 }
 
-const PropertyChart: NextPage<ChartProps> = ({ data }) => {
+const SCALE_OPTS =  {
+  grid: {
+    display: false,
+  },
+  ticks: {
+    color: "rgb(148, 139, 137)",
+  },
+}
+
+const PropertyChart: NextPage<ChartProps> = ({ transactions }) => {
   return (
     <Line
       data={{
-        labels: data.map((item) => item.saleDate),
+        labels: transactions.map((item) => item.saleDate),
         datasets: [
           {
             label: "PSF",
-            data: data.map((item) => item.psf),
+            data: transactions.map((item) => item.psf),
             borderColor: "rgb(75, 192, 192)",
             fill: false,
           },
@@ -31,22 +40,8 @@ const PropertyChart: NextPage<ChartProps> = ({ data }) => {
       }}
       options={{
         scales: {
-          x: {
-            grid: {
-              display: false,
-            },
-            ticks: {
-              color: "rgb(148, 139, 137)",
-            },
-          },
-          y: {
-            grid: {
-              display: false,
-            },
-            ticks: {
-              color: "rgb(148, 139, 137)",
-            },
-          },
+          x: SCALE_OPTS,
+          y: SCALE_OPTS,
         },
       }}
     />

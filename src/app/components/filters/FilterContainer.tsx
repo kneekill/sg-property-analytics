@@ -1,36 +1,34 @@
 "use client";
-import { FilterOptions } from "@/app/types";
+import { FilterOptions, Transaction } from "@/app/types";
 import { SelectFilter } from "./SelectFilter";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { RangeFilter } from "./RangeFilter";
 import { isRangeAttribute } from "../../data/range_options";
-import { usePathname, useRouter } from "next/navigation";
+import PropertyChart from "@/app/chart";
+import { getTransactions } from "@/app/data/actions";
 
 interface FilterContainerProps {
   filterOptions: FilterOptions;
+  initialTransactions: Transaction[];
 }
 
-export function FilterContainer({ filterOptions }: FilterContainerProps) {
+export function FilterContainer({
+  filterOptions,
+  initialTransactions,
+}: FilterContainerProps) {
   const [filters, setFilters] = useState<Partial<FilterOptions>>();
-  const router = useRouter();
-  const pathname = usePathname();
+  const [transactions, setTransactions] = useState(initialTransactions);
 
-  const [, startTransition] = useTransition();
   useEffect(() => {
-    const urlParams = new URLSearchParams();
-    if (filters) {
-      for (const [key, values] of Object.entries(filters)) {
-        if (values) {
-          values.forEach((value) => {
-            urlParams.append(key, value.toString());
-          });
-        }
+    const fetchAndSetTransactions = async () => {
+      if (filters) {
+        const fetchedTransactions = await getTransactions(filters);
+        setTransactions(fetchedTransactions);
       }
-      startTransition(() => {
-        router.replace(`${pathname}?${urlParams.toString()}`);
-      });
-    }
-  }, [filters, pathname, router]);
+    };
+
+    fetchAndSetTransactions();
+  }, [filters]);
   const onChange = (name: string, value: string[] | number[]) => {
     setFilters((prevState) => {
       return {
@@ -41,6 +39,8 @@ export function FilterContainer({ filterOptions }: FilterContainerProps) {
   };
   return (
     <>
+      <PropertyChart transactions={transactions} />
+
       {filterOptions
         ? Object.entries(filterOptions).map(([column, values]) => {
             return (

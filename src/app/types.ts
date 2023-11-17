@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface RawTransaction {
   saleDate: number;
   psf: number;
@@ -7,21 +9,24 @@ export interface Transaction {
   saleDate: string;
   psf: number;
 }
-export interface FilterOptions {
-  projectName: string[];
-  price: number[];
-  sqft: number[];
-  psf: number[];
-  saleDate: string[];
-  streetName: string[];
-  saleType: string[];
-  areaType: string[];
-  propertyType: string[];
-  leaseType: string[];
-  leaseLength: number[];
-  topYear: number[];
-  district: number[];
-  marketSegment: string[];
-  lowFloorLevel: string[];
-  highFloorLevel: string[];
-}
+
+export const FilterOptionsSchema = z.object({
+  projectName: z.string().array(),
+  price: z.number().array().length(2),
+  sqft: z.number().array().length(2),
+  psf: z.number().array().length(2),
+  saleDate: z.string().array(),
+  streetName: z.string().array(),
+  saleType: z.string().array(),
+  areaType: z.string().array(),
+  propertyType: z.string().array(),
+  leaseType: z.string().array(),
+  leaseLength: z.number().array(),
+  topYear: z.number().array().length(2),
+  district: z.number().array(),
+  marketSegment: z.string().array(),
+  lowFloorLevel: z.string().array(),
+  highFloorLevel: z.string().array(),
+});
+
+export type FilterOptions = z.infer<typeof FilterOptionsSchema>;

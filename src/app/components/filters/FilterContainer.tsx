@@ -30,7 +30,7 @@ export function FilterContainer({
     };
 
     fetchAndSetTransactions();
-  }, [filters, filterOptions.saleDate]);
+  }, [filters]);
 
   const handleFilterChange = useCallback(
     (name: keyof FilterOptions, value: string[] | number[]) => {
@@ -45,9 +45,14 @@ export function FilterContainer({
   const handleDateRangeChange = useCallback(
     (range: [number | null, number | null]) => {
       const [low, high] = range;
+      setDateRange(range);
       
       if (low === null || high === null) {
-        setFilters(({ saleDate, ...rest }) => saleDate ? rest : { saleDate, ...rest });
+        setFilters(({ saleDate, ...rest }) => rest);
+        return;
+      }
+
+      if (!filterOptions.saleDate || filterOptions.saleDate.length < 2) {
         return;
       }
 

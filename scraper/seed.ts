@@ -2,7 +2,7 @@ import { parse as dateParse } from "date-fns";
 import { parse } from "csv-parse/sync";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { InferAttributes } from "sequelize";
+import { InferAttributes, Op } from "sequelize";
 import { PropertyTransaction, getDbModel } from "@/app/data/database";
 
 function parseIntWithComma(str: string) {
@@ -19,7 +19,7 @@ function getURLSearchParams(
   const result = new URLSearchParams(
     `propertyTypeGroupNo=3&saleType%5B0%5D=1&saleType%5B1%5D=2&saleType%5B2%5D=3&downloadType=downloadCSV&selectColumn=1&selectColumn=2&selectColumn=3&selectColumn=4&selectColumn=5&selectColumn=6&selectColumn=7&selectColumn=8&selectColumn=9&selectColumn=10&selectColumn=11&selectColumn=12&selectColumn=13&selectColumn=14&selectColumn=15&selectColumn=16&selectColumn=17`
   );
-  result.append("locationDetails", `["postalDistrict","${postalDistrict}]"`);
+  result.append("locationDetails", `["postalDistrict","${postalDistrict}"]`);
   result.append("saleYearFrom", fromYear);
   result.append("saleYearTo", toYear);
   result.append("saleMonthFrom", fromMonth);
@@ -30,43 +30,43 @@ function getURLSearchParams(
 
 const SQLITE_BULK_INSERT_LIMIT = 500;
 const postalDistricts = [
-  "D01+/+Raffles+Place,+Cecil,+Marina,+People's+Park",
-  "D02+/+Anson,+Tanjong+Pagar",
-  "D03+/+Queenstown,+Tiong+Bahru",
-  "D04+/+Telok+Blangah,+Harbourfront",
-  "D05+/+Pasir+Panjang,+Hong+Leong+Garden,+Clementi+New+Town",
-  "D06+/+High+Street,+Beach+Road+(part)",
-  "D07+/+Middle+Road,+Golden+Mile",
-  "D08+/+Little+India",
-  "D09+/+Orchard,+Cairnhill,+River+Valley",
-  "D10+/+Ardmore,+Bukit+Timah,+Holland+Road,+Tanglin",
-  "D11+/+Watten+Estate,+Novena,+Thomson",
-  "D12+/+Balestier,+Toa+Payoh,+Serangoon",
-  "D13+/+Macpherson,+Braddell",
-  "D14+/+Geylang,+Eunos",
-  "D15+/+Katong,+Joo+Chiat,+Amber+Road",
-  "D16+/+Bedok,+Upper+East+Coast,+Eastwood,+Kew+Drive",
-  "D17+/+Loyang,+Changi",
-  "D18+/+Tampines,+Pasir+Ris",
-  "D19+/+Serangoon+Garden,+Hougang,+Ponggol",
-  "D20+/+Bishan,+Ang+Mo+Kio",
-  "D21+/+Upper+Bukit+Timah,+Clementi+Park,+Ulu+Pandan",
-  "D22+/+Jurong",
-  "D23+/+Hillview,+Dairy+Farm,+Bukit+Panjang,+Choa+Chu+Kang",
-  "D24+/+Lim+Chu+Kang,+Tengah",
-  "D25+/+Kranji,+Woodgrove",
-  "D26+/+Upper+Thomson,+Springleaf",
-  "D27+/+Yishun,+Sembawang",
-  "D28+/+Seletar",
+  "D01 / Raffles Place, Cecil, Marina, People's Park",
+  "D02 / Anson, Tanjong Pagar",
+  "D03 / Queenstown, Tiong Bahru",
+  "D04 / Telok Blangah, Harbourfront",
+  "D05 / Pasir Panjang, Hong Leong Garden, Clementi New Town",
+  "D06 / High Street, Beach Road (part)",
+  "D07 / Middle Road, Golden Mile",
+  "D08 / Little India",
+  "D09 / Orchard, Cairnhill, River Valley",
+  "D10 / Ardmore, Bukit Timah, Holland Road, Tanglin",
+  "D11 / Watten Estate, Novena, Thomson",
+  "D12 / Balestier, Toa Payoh, Serangoon",
+  "D13 / Macpherson, Braddell",
+  "D14 / Geylang, Eunos",
+  "D15 / Katong, Joo Chiat, Amber Road",
+  "D16 / Bedok, Upper East Coast, Eastwood, Kew Drive",
+  "D17 / Loyang, Changi",
+  "D18 / Tampines, Pasir Ris",
+  "D19 / Serangoon Garden, Hougang, Ponggol",
+  "D20 / Bishan, Ang Mo Kio",
+  "D21 / Upper Bukkit Timah, Clementi Park, Ulu Pandan",
+  "D22 / Jurong",
+  "D23 / Hillview, Dairy Farm, Bukkit Panjang, Choa Chu Kang",
+  "D24 / Lim Chu Kang, Tengah",
+  "D25 / Kranji, Woodgrove",
+  "D26 / Upper Thomson, Springleaf",
+  "D27 / Yishun, Sembawang",
+  "D28 / Seletar",
 ];
 
-async function seed(startDate: number, data: string[]) {
+async function seed(startDate: number, endDate: number, data: string[]) {
   var models: Omit<InferAttributes<PropertyTransaction>, "id">[] = [];
   const model = getDbModel();
 
   // drop start months transactions
   await model.destroy({
-    where: { saleDate: startDate },
+    where: { saleDate: { [Op.between]: [startDate, endDate] } },
   });
   for (const datum of data) {
     console.log(datum);
@@ -154,7 +154,7 @@ async function scrape(fromDate: string, toDate: string) {
         page
       );
       const response = await fetch(
-        "https://www.ura.gov.sg/property-market-information/pmiSearchResidentialTransactionDownload",
+        "https://eservice.ura.gov.sg/property-market-information/pmiSearchResidentialTransactionDownload",
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -199,7 +199,9 @@ async function main() {
   const scrapedData = await scrape(fromDate, toDate);
   const unixStartDate =
     dateParse(fromDate, "M/yyyy", new Date()).getTime() / 1000;
-  await seed(unixStartDate, scrapedData);
+    const unixEndDate =
+    dateParse(toDate, "M/yyyy", new Date()).getTime() / 1000;
+  await seed(unixStartDate, unixEndDate, scrapedData);
 }
 
 main().catch(async (e) => {

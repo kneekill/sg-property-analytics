@@ -15,7 +15,7 @@ export const FilterOptionsSchema = z.object({
   price: z.number().array().length(2),
   sqft: z.number().array().length(2),
   psf: z.number().array().length(2),
-  saleDate: z.string().array(),
+  saleDate: z.number().array().length(2),
   streetName: z.string().array(),
   saleType: z.string().array(),
   areaType: z.string().array(),

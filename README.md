@@ -1,6 +1,6 @@
 # SG Property Analytics
 
-Small project to explore React Server Components while also providing a better way of charting Singapore property data than [URA's website](https://www.ura.gov.sg/property-market-information/pmiResidentialTransactionSearch).
+Small project to explore React Server Components while also providing a better way of charting Singapore property data than [URA's website](https://go.gov.sg/ura-pmi-resi).
 
 The app is hosted here: https://sg-property-analytics.vercel.app/ with supabase for postgres since vercel's serverless functions does not support SQLite.
 
@@ -8,7 +8,7 @@ The app is hosted here: https://sg-property-analytics.vercel.app/ with supabase 
 
 ### Webapp
 
-- `npm run dev` and it will be hosted on [http://localhost:3000](http://localhost:3000)
+- `bun run dev` and it will be hosted on [http://localhost:3000](http://localhost:3000)
   - By default, the app runs with the sqlite database. Expose `POSTGRES_CONNECTION` with a postgres connection string to use postgres instead.
 
 ### Update Data
@@ -16,7 +16,7 @@ The app is hosted here: https://sg-property-analytics.vercel.app/ with supabase 
 To update the data for the app, you need to run the scraper and seed the database.
 
 - Update the [seed.ts](./scraper/seed.ts) with the latest dates
-- Run `npx tsx ./scraper/seed.ts`
+- Run `bunx ./scraper/seed.ts`
 
 ## TODOs
 

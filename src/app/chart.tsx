@@ -7,32 +7,28 @@ import {
   LineElement,
   Chart,
 } from "chart.js";
-import { NextPage } from "next";
 import { Transaction } from "./types";
+
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 interface ChartProps {
   transactions: Transaction[];
 }
 
-const SCALE_OPTS =  {
-  grid: {
-    display: false,
-  },
-  ticks: {
-    color: "rgb(148, 139, 137)",
-  },
-}
+const SCALE_OPTIONS = {
+  grid: { display: false },
+  ticks: { color: "rgb(148, 139, 137)" },
+};
 
-const PropertyChart: NextPage<ChartProps> = ({ transactions }) => {
+export default function PropertyChart({ transactions }: ChartProps) {
   return (
     <Line
       data={{
-        labels: transactions.map((item) => item.saleDate),
+        labels: transactions.map((t) => t.saleDate),
         datasets: [
           {
             label: "PSF",
-            data: transactions.map((item) => item.psf),
+            data: transactions.map((t) => t.psf),
             borderColor: "rgb(75, 192, 192)",
             fill: false,
           },
@@ -40,12 +36,10 @@ const PropertyChart: NextPage<ChartProps> = ({ transactions }) => {
       }}
       options={{
         scales: {
-          x: SCALE_OPTS,
-          y: SCALE_OPTS,
+          x: SCALE_OPTIONS,
+          y: SCALE_OPTIONS,
         },
       }}
     />
   );
-};
-
-export default PropertyChart;
+}

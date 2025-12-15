@@ -12,23 +12,27 @@ const verifyFilters = (filters: object): Partial<FilterOptions> => {
   return FilterOptionsSchema.partial().parse(filters);
 };
 
+const buildWhereClause = (filters: Partial<FilterOptions>): WhereOptions<PropertyTransactionAttributes> => {
+  const whereClause: WhereOptions<PropertyTransactionAttributes> = {};
+  
+  for (const filter of Object.keys(filters) as Array<keyof FilterOptions>) {
+    const value = filters[filter];
+    if (!value) continue;
+    
+    whereClause[filter as keyof typeof whereClause] = isRangeAttribute(filter)
+      ? { [Op.between]: value }
+      : { [Op.in]: value };
+  }
+  
+  return whereClause;
+};
+
 export const getTransactions = unstable_cache(
   async (filters: object) => {
     "use server";
     const parsedFilters = verifyFilters(filters);
     const model = getDbModel();
-    const whereClause: WhereOptions<PropertyTransactionAttributes> = {};
-    for (const filter of Object.keys(parsedFilters) as Array<
-      keyof FilterOptions
-    >) {
-      whereClause[filter as keyof typeof whereClause] = isRangeAttribute(filter)
-        ? {
-            [Op.between]: parsedFilters[filter],
-          }
-        : {
-            [Op.in]: parsedFilters[filter],
-          };
-    }
+    const whereClause = buildWhereClause(parsedFilters);
 
     const result = await model
       .findAll({
